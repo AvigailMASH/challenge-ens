@@ -10,11 +10,11 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 
-from framework.dataset import LandCoverData as LCD
-from framework.dataset import parse_image, load_image_train, load_image_test
-from framework.model import UNet
-from framework.tensorflow_utils import plot_predictions
-from framework.utils import YamlNamespace
+from dataset import LandCoverData as LCD
+from dataset import parse_image, load_image_train, load_image_test
+from model import UNet
+from tensorflow_utils import plot_predictions
+from utils import YamlNamespace
 
 class PlotCallback(tf.keras.callbacks.Callback):
     """A callback used to display sample predictions during training."""
@@ -75,7 +75,7 @@ if __name__ == '__main__':
     N_CPUS = multiprocessing.cpu_count()
 
     print('Instanciate train and validation datasets')
-    train_files = list(config.dataset_folder.glob('train/images/*.tif'))
+    train_files = list(config.dataset_folder.glob('train/images/images/*.tif'))
     # shuffle list of training samples files
     train_files = random.sample(train_files, len(train_files))
     devset_size = len(train_files)
@@ -83,7 +83,7 @@ if __name__ == '__main__':
     if config.val_samples_csv is not None:
         # read the validation samples
         val_samples_s = pd.read_csv(config.val_samples_csv, squeeze=True)
-        val_files = [config.dataset_folder/'train/images/{}.tif'.format(i) for i in val_samples_s]
+        val_files = [config.dataset_folder/'train/images//images{}.tif'.format(i) for i in val_samples_s]
         train_files = [f for f in train_files if f not in set(val_files)]
         valset_size = len(val_files)
         trainset_size = len(train_files)
