@@ -83,7 +83,7 @@ if __name__ == '__main__':
     if config.val_samples_csv is not None:
         # read the validation samples
         val_samples_s = pd.read_csv(config.val_samples_csv, squeeze=True)
-        val_files = [config.dataset_folder/'train/images//images{}.tif'.format(i) for i in val_samples_s]
+        val_files = [config.dataset_folder/'train/images/images/{}.tif'.format(i) for i in val_samples_s]
         train_files = [f for f in train_files if f not in set(val_files)]
         valset_size = len(val_files)
         trainset_size = len(train_files)
