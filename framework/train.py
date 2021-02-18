@@ -174,11 +174,11 @@ if __name__ == '__main__':
                   #            tf.keras.metrics.MeanIoU(num_classes=LCD.N_CLASSES)]) # TODO segmentation metrics
 
     # Launch training
-    model_history = model.fit(train_dataset, epochs=config.epochs,
+    model.fit(train_dataset, epochs=config.epochs,
                               callbacks=callbacks,
                               steps_per_epoch=trainset_size // config.batch_size,
                               validation_data=val_dataset,
                               validation_steps=valset_size // config.batch_size,
                               class_weight=class_weight
                               )
-
+    model.save('/content/experiments/saved')
