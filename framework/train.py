@@ -122,7 +122,10 @@ if __name__ == '__main__':
     # keep a training minibatch for visualization
     for image, mask in train_dataset.take(1):
         sample_batch = (image[:5, ...], mask[:5, ...])
-
+    
+    strxp_dir = xp.absolute()
+    strxp_dir = strxp_dir.as_posix()
+    
     callbacks = [
         PlotCallback(sample_batch=sample_batch, save_folder=xp_dir/'plots', num=5),
         tf.keras.callbacks.TensorBoard(
@@ -131,7 +134,7 @@ if __name__ == '__main__':
         ),
         # tf.keras.callbacks.EarlyStopping(patience=10, verbose=1),
         tf.keras.callbacks.ModelCheckpoint(
-            filepath=xp_dir/'checkpoints/epoch{epoch}', save_best_only=False, verbose=1
+            filepath=strxp_dir + '/' +'checkpoints/epoch{epoch}', save_best_only=False, verbose=1
         ),
         tf.keras.callbacks.CSVLogger(
             filename=(xp_dir/'fit_logs.csv')
