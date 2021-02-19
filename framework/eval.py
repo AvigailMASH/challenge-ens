@@ -6,7 +6,7 @@ import argparse
 import numpy as np
 import pandas as pd
 
-from framework.dataset import LandCoverData as LCD
+from dataset import LandCoverData as LCD
 
 def epsilon_kl_divergence(y_true, y_pred):
     """
