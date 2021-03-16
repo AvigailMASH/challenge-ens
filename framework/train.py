@@ -9,7 +9,6 @@ import random
 import numpy as np
 import pandas as pd
 import tensorflow as tf
-import os
 from os import path
 
 from dataset import LandCoverData as LCD
@@ -19,8 +18,8 @@ from tensorflow_utils import plot_predictions
 from utils import YamlNamespace
 
 if not path.exists('/content/experiments'):
-      Save_model = '/content/experiments'
-      os.mkdir(Save_model)
+  Save_model='/content/experiments'
+  os.mkdir(Save_model)
 
 class PlotCallback(tf.keras.callbacks.Callback):
     """A callback used to display sample predictions during training."""
