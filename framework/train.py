@@ -185,6 +185,5 @@ if __name__ == '__main__':
                               steps_per_epoch=trainset_size // config.batch_size,
                               validation_data=val_dataset,
                               validation_steps=valset_size // config.batch_size,
-                              class_weight=class_weight
                               )
     model.save('/content/experiments/saved')
