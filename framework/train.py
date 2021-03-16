@@ -9,6 +9,7 @@ import random
 import numpy as np
 import pandas as pd
 import tensorflow as tf
+import os 
 from os import path
 
 from dataset import LandCoverData as LCD
