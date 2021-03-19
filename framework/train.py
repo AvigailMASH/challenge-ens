@@ -75,8 +75,7 @@ class WeightedSparseCategoricalCrossEntropy(keras.losses.Loss):
 
 class dice_loss(keras.losses.Loss):
     '''
-      Dice coefficient for 10 categories. Ignores pixel of label 0 and 1
-      Pass to model as metric during compile statement
+      Ignores pixel of label 0 and 1
     '''
     def __init__(self, from_logits=False,
                  reduction=keras.losses.Reduction.AUTO,
