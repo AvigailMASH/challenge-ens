@@ -11,6 +11,10 @@ import pandas as pd
 import tensorflow as tf
 import os 
 from os import path
+import keras
+import keras.backend as K
+from itertools import product
+import keras.losses
 
 from dataset import LandCoverData as LCD
 from dataset import parse_image, load_image_train, load_image_test
@@ -47,6 +51,29 @@ class PlotCallback(tf.keras.callbacks.Callback):
             save_filepaths = None
         plot_predictions(self.model, self.dataset, self.sample_batch, num=self.num, save_filepaths=save_filepaths)
 
+class WeightedSparseCategoricalCrossEntropy(keras.losses.Loss):
+    """
+    Args:
+      class_weight: class_weight defined using class distribution
+      from_logits: Whether to compute loss from logits or the probability.
+      reduction: Type of tf.keras.losses.Reduction to apply to loss.
+      name: Name of the loss function.
+    """
+    def __init__(self, from_logits=False,
+                 reduction=keras.losses.Reduction.AUTO,
+                 name='weighted_sparse_categorical_crossentropy'):
+        super().__init__(reduction=reduction, name=name)
+        #self.class_weight = class_weight
+        self.from_logits = from_logits
+
+
+    def call(self, y_true, y_pred):
+        #return tf.keras.losses.sparse_categorical_crossentropy(y_true, y_pred, from_logits=False, axis=-1)
+        #scce = tf.keras.losses.SparseCategoricalCrossentropy()
+        #return scce(y_true, y_pred)
+        log_ = K.mean(K.sparse_categorical_crossentropy(y_true, y_pred))
+        return K.sum (log_ * K. constant(class_weight))
+
 
 def _parse_args():
     parser = argparse.ArgumentParser('Training script')
@@ -82,6 +109,7 @@ if __name__ == '__main__':
 
     print('Instanciate train and validation datasets')
     train_files = list(config.dataset_folder.glob('train/images/images/*.tif'))
+    train_files = train_files[:500]
     # shuffle list of training samples files
     train_files = random.sample(train_files, len(train_files))
     devset_size = len(train_files)
@@ -168,9 +196,10 @@ if __name__ == '__main__':
     # note: we set to 0 the weights for the classes "no_data"(0) and "clouds"(1) to ignore these
     class_weight = (1 / LCD.TRAIN_CLASS_COUNTS)* LCD.TRAIN_CLASS_COUNTS.sum() / (LCD.N_CLASSES)
     class_weight[LCD.IGNORED_CLASSES_IDX] = 0.
-    print(f"Will use class weights: {class_weight}")
-
-    loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False)
+    print(f"Will use class weights: {class_weight}") 
+    
+    #loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False)
+    loss = WeightedSparseCategoricalCrossEntropy()
     print("Compile model")
     model.compile(optimizer=optimizer,
                   loss=loss,
