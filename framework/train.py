@@ -73,6 +73,26 @@ class WeightedSparseCategoricalCrossEntropy(keras.losses.Loss):
         log_ = K.mean(K.sparse_categorical_crossentropy(y_true, y_pred))
         return K.sum (log_ * K. constant(class_weight))
 
+class dice_loss(keras.losses.Loss):
+    '''
+      Dice coefficient for 10 categories. Ignores pixel of label 0 and 1
+      Pass to model as metric during compile statement
+    '''
+    def __init__(self, from_logits=False,
+                 reduction=keras.losses.Reduction.AUTO,
+                 name='dice_loss'):
+        super().__init__(reduction=reduction, name=name)
+        self.from_logits = from_logits
+
+
+    def call(self, y_true, y_pred):
+        smooth=1e-7
+        y_true_f = K.flatten(K.one_hot(K.cast(y_true, 'int32'), num_classes=10)[...,2:])
+        y_pred_f = K.flatten(y_pred[...,2:])
+        intersection = K.sum(y_true_f * y_pred_f, axis=-1)
+        den = K.sum(y_true_f + y_pred_f, axis=-1)
+        dice_coeff = K.mean((2. * intersection / (den + smooth)))
+        return 1 - dice_coeff
 
 def _parse_args():
     parser = argparse.ArgumentParser('Training script')
@@ -199,6 +219,8 @@ if __name__ == '__main__':
     
     #loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False)
     loss = WeightedSparseCategoricalCrossEntropy()
+    #loss = dice_loss()
+    #loss = jaccard_loss()
     print("Compile model")
     model.compile(optimizer=optimizer,
                   loss=loss,
