@@ -13,7 +13,6 @@ import os
 from os import path
 import keras
 import keras.backend as K
-from itertools import product
 import keras.losses
 
 from dataset import LandCoverData as LCD
