@@ -93,6 +93,23 @@ class dice_loss(keras.losses.Loss):
         den = K.sum(y_true_f + y_pred_f, axis=-1)
         dice_coeff = K.mean((2. * intersection / (den + smooth)))
         return 1 - dice_coeff
+      
+class jaccard_loss(keras.losses.Loss):
+    def __init__(self, from_logits=False,
+                 reduction=keras.losses.Reduction.AUTO,
+                 name='jaccard_loss'):
+        super().__init__(reduction=reduction, name=name)
+        self.from_logits = from_logits
+
+
+    def call(self, y_true, y_pred):
+        smooth=100
+        y_true_f = K.flatten(K.one_hot(K.cast(y_true, 'int32'), num_classes=10)[...,2:])
+        y_pred_f = K.flatten(y_pred[...,2:])
+        intersection = K.sum(K.abs(y_true_f * y_pred_f), axis=-1)
+        sum_ = K.sum(K.abs(y_true_f) + K.abs(y_pred_f), axis=-1)
+        jac = (intersection + smooth) / (sum_ - intersection + smooth)
+        return (1 - jac) * smooth
 
 def _parse_args():
     parser = argparse.ArgumentParser('Training script')
