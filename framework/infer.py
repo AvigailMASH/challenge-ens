@@ -1,6 +1,9 @@
 """
 Predict the targets using a trained model.
 """
+
+# !! changer loss dans custom_objects, load_model
+
 from pathlib import Path
 import argparse
 import yaml
@@ -14,6 +17,8 @@ import tensorflow as tf
 from dataset import LandCoverData as LCD
 from utils import YamlNamespace
 from train import WeightedSparseCategoricalCrossEntropy
+from train import dice_loss
+from train import jaccard_loss
 
 def numpy_parse_image(image_path):
     """Load an image as numpy array
