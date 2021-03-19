@@ -144,7 +144,7 @@ if __name__ == '__main__':
 
     print('Instanciate train and validation datasets')
     train_files = list(config.dataset_folder.glob('train/images/images/*.tif'))
-    #train_files = train_files[:500]
+    train_files = train_files[:5000]
     # shuffle list of training samples files
     train_files = random.sample(train_files, len(train_files))
     devset_size = len(train_files)
@@ -237,6 +237,7 @@ if __name__ == '__main__':
     loss = WeightedSparseCategoricalCrossEntropy()
     #loss = dice_loss()
     #loss = jaccard_loss()
+    
     print("Compile model")
     model.compile(optimizer=optimizer,
                   loss=loss,
