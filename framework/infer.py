@@ -13,6 +13,7 @@ import tensorflow as tf
 
 from dataset import LandCoverData as LCD
 from utils import YamlNamespace
+from train import WeightedSparseCategoricalCrossEntropy
 
 def numpy_parse_image(image_path):
     """Load an image as numpy array
@@ -142,9 +143,10 @@ if __name__ == '__main__':
         .repeat(1)\
         .batch(config.batch_size)\
         .prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
-
+    
+     
     # Load the trained model saved to disk
-    model = tf.keras.models.load_model('/content/experiments/saved')
+    model = tf.keras.models.load_model('/content/experiments/saved', custom_objects={'WeightedSparseCategoricalCrossEntropy': WeightedSparseCategoricalCrossEntropy})
 
     print(f"Predict the vectors over the {config.set} dataset")
     y_pred = predict_as_vectors(model, test_dataset, steps=testset_size // config.batch_size)
