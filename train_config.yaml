@@ -8,7 +8,7 @@
 seed: 42
 # the size of each batch of images when training
 # careful not to use a too large batch size, might lead to OOM errors
-batch_size: 32
+batch_size: 24
 # the number of epochs to train for
 epochs: 10
 # the learning rate
