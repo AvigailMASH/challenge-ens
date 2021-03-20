@@ -164,3 +164,4 @@ if __name__ == '__main__':
     out_csv = config.xp_dir/f'epoch{config.checkpoint_epoch}_{config.set}_predicted.csv'
     print(f"Saving prediction CSV to file {str(out_csv)}")
     df_y_pred.to_csv(out_csv, index=True, index_label='sample_id')
+    df_y_pred.to_csv('/content/drive/MyDrive/submission_preligens.csv', index=True, index_label='sample_id')
