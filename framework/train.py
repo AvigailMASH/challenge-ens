@@ -74,9 +74,6 @@ class WeightedSparseCategoricalCrossEntropy(keras.losses.Loss):
         return K.sum (log_ * K. constant(class_weight))
 
 class dice_loss(keras.losses.Loss):
-    '''
-      Ignores pixel of label 0 and 1
-    '''
     def __init__(self, from_logits=False,
                  reduction=keras.losses.Reduction.AUTO,
                  name='dice_loss'):
@@ -86,8 +83,8 @@ class dice_loss(keras.losses.Loss):
 
     def call(self, y_true, y_pred):
         smooth=1e-7
-        y_true_f = K.flatten(K.one_hot(K.cast(y_true, 'int32'), num_classes=10)[...,2:])
-        y_pred_f = K.flatten(y_pred[...,2:])
+        y_true_f = K.flatten(K.one_hot(K.cast(y_true, 'int32'), num_classes=10))
+        y_pred_f = K.flatten(y_pred)
         intersection = K.sum(y_true_f * y_pred_f, axis=-1)
         den = K.sum(y_true_f + y_pred_f, axis=-1)
         dice_coeff = K.mean((2. * intersection / (den + smooth)))
@@ -103,8 +100,8 @@ class jaccard_loss(keras.losses.Loss):
 
     def call(self, y_true, y_pred):
         smooth=100
-        y_true_f = K.flatten(K.one_hot(K.cast(y_true, 'int32'), num_classes=10)[...,2:])
-        y_pred_f = K.flatten(y_pred[...,2:])
+        y_true_f = K.flatten(K.one_hot(K.cast(y_true, 'int32'), num_classes=10))
+        y_pred_f = K.flatten(y_pred)
         intersection = K.sum(K.abs(y_true_f * y_pred_f), axis=-1)
         sum_ = K.sum(K.abs(y_true_f) + K.abs(y_pred_f), axis=-1)
         jac = (intersection + smooth) / (sum_ - intersection + smooth)
